@@ -1,0 +1,4 @@
+body { font-family: sans-serif; margin: 20px; }
+textarea, pre { width: 100%; height: 200px; margin-top: 10px; font-family: monospace; }
+button { margin-top: 10px; margin-right: 5px; }
+#result { white-space: pre-wrap; background: #f7f7f7; padding: 10px; border: 1px solid #ccc; }
