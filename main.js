@@ -1,3 +1,12 @@
+// Reset all main fields
+document.getElementById('resetBtn').addEventListener('click', function() {
+  document.getElementById('dataInput').value = '';
+  document.getElementById('promptInput').value = '';
+  document.getElementById('codeInput').value = '';
+  document.getElementById('result').textContent = '';
+  document.getElementById('promptTitle').textContent = 'Prompt';
+  document.getElementById('promptTitleBar').dataset.desc = '';
+});
 let resultText = "";
 
 // Handle file upload

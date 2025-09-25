@@ -235,6 +235,102 @@ Result after running code:
 ]
 ``` 
 
+### Customer Revenue
+
+Prompt:
+
+You are a code assistant. 
+I will provide you with:
+- The input data (as a string, which may be CSV, JSON, or plain text).
+- The transformation or processing I want done.
+
+Write a single JavaScript function body that:
+- Accepts one argument called `data` (string).
+- Processes it according to my request.
+- Returns the result (object, array, or string).
+
+Important:
+- Do not include explanations or comments.
+- Do not include markdown formatting or triple backticks.
+- The output must be **only valid JavaScript code** for the function body.
+
+Example input:
+Data: JSON array of objects
+Task: return the names in uppercase
+
+Desired Example Output:
+const obj = JSON.parse(data);
+return obj.map(x => x.name.toUpperCase());
+
+
+Now here is my request: here is data (revenue per customer per month)
+Data: 
+Customer,J,F,M,A,M,J,J, 
+Customer A,23,45,12,,21,24,11,
+Customer B,2,415,112,76,1,,1,
+Customer A,2,15,8,,11,224,16,2
+Customer D,2,415,112,76,1,,1,
+
+Task: Produce CSV with revenue per customer (deduplicated) per quarter and per year
+
+Customer,Q1,Q2,Q3,Y 
+Customer A,23,45,3,211
+Customer B,567,54,2,1,
+Customer D,167,524,21,1121,
+
+
+
+Response from Gemini:
+```
+const lines = data.split('\n').map(line => line.trim()).filter(line => line !== '');
+const revenueData = {};
+for (let i = 1; i < lines.length; i++) {
+  const parts = lines[i].split(',').map(part => part.trim());
+  const customer = parts[0];
+  const monthlyRevenues = parts.slice(1);
+  const q1 = (parseFloat(monthlyRevenues[0]) || 0) + (parseFloat(monthlyRevenues[1]) || 0) + (parseFloat(monthlyRevenues[2]) || 0);
+  const q2 = (parseFloat(monthlyRevenues[3]) || 0) + (parseFloat(monthlyRevenues[4]) || 0) + (parseFloat(monthlyRevenues[5]) || 0);
+  const q3 = (parseFloat(monthlyRevenues[6]) || 0) + (parseFloat(monthlyRevenues[7]) || 0) + (parseFloat(monthlyRevenues[8]) || 0);
+  const total = q1 + q2 + q3;
+  if (!revenueData[customer]) {
+    revenueData[customer] = {
+      Q1: 0,
+      Q2: 0,
+      Q3: 0,
+      Y: 0
+    };
+  }
+  revenueData[customer].Q1 += q1;
+  revenueData[customer].Q2 += q2;
+  revenueData[customer].Q3 += q3;
+  revenueData[customer].Y += total;
+}
+const resultCsv = ["Customer,Q1,Q2,Q3,Y"];
+for (const customer in revenueData) {
+  const { Q1, Q2, Q3, Y } = revenueData[customer];
+  resultCsv.push(`${customer},${Q1},${Q2},${Q3},${Y}`);
+}
+return resultCsv.join('\n');
+``` 
+
+Using the data in examples\customer-revenue.csv
+
+the result:
+
+Customer,Q1,Q2,Q3,Y
+Customer A,105,280,29,414
+Customer B,529,77,1,607
+Customer D,529,77,1,607
+Jan de Vries,948,594,422,1964
+Sanne Jansen,840,657,195,1692
+Pieter Bakker,699,130,136,965
+Lisa de Jong,912,1926,266,3104
+Bram Smit,1228,1262,521,3011
+Eva Meijer,776,726,480,1982
+Tom Mulder,373,671,113,1157
+Daan de Boer,1167,704,216,2087
+Lotte Hendriks,455,1140,460,2055
+
 
 ## Next Steps
 (see ChatGPT conversation https://chatgpt.com/share/68d296e1-0b94-8005-b772-f3183c10b356)

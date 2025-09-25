@@ -1,0 +1,51 @@
+.sample-title-row.active {
+  background: #e0f0ff;
+  border-radius: 4px;
+}
+.prompt-field-container {
+  margin-top: 10px;
+}
+.prompt-title-bar {
+  cursor: pointer;
+  font-weight: bold;
+  background: #f0f0f0;
+  padding: 6px;
+  border-radius: 4px;
+  position: relative;
+}
+.prompt-desc-tooltip {
+  display: none;
+  margin-left: 10px;
+  font-weight: normal;
+  color: #555;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 2px 6px;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 10;
+}
+.prompt-toggle {
+  float: right;
+}
+#promptInput {
+  width: 100%;
+  margin-top: 6px;
+}
+/* Styles for sample catalog modal */
+.sample-title-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+}
+.sample-title {
+  flex: 1;
+  cursor: pointer;
+}
+.copy-inline-btn {
+  margin-left: 10px;
+  display: none;
+}
+.sample-title-row.active .copy-inline-btn {
+  display: inline-block;
+}

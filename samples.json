@@ -1,0 +1,34 @@
+[
+  {
+    "title": "Uppercase Names from JSON Array",
+    "description": "Extract names from a JSON array and return them in uppercase.",
+    "prompt": "Data: JSON array of objects\nTask: return the names in uppercase",
+    "data": "[{\"name\":\"Alice\"},{\"name\":\"Bob\"},{\"name\":\"Charlie\"}]",
+    "code": "const obj = JSON.parse(data);\nreturn obj.map(x => x.name.toUpperCase());",
+    "output": "[\n  \"ALICE\",\n  \"BOB\",\n  \"CHARLIE\"\n]"
+  },
+  {
+    "title": "Filter CSV by Age or City",
+    "description": "Return names of people older than 30 or living in Berlin from a CSV.",
+    "prompt": "Data: CSV with columns first name, last name,age, city\nTask: return only the names of people older than 30 as a JSON array or living in Berlin",
+    "data": "John,Doe,28,Berlin\nJane,Smith,35,London\nMax,Mustermann,40,Berlin\nAnna,Müller,25,Hamburg",
+    "code": "const rows = data.split('\\n').map(row => row.trim()).filter(row => row !== '');\nreturn rows.filter(row => {\n  const [, , age, city] = row.split(',').map(item => item.trim());\n  return parseInt(age, 10) > 30 || city === 'Berlin';\n}).map(row => {\n  const [firstName, lastName] = row.split(',').map(item => item.trim());\n  return `${firstName} ${lastName}`;\n});",
+    "output": "[\n  \"John Doe\",\n  \"Jane Smith\",\n  \"Max Mustermann\"\n]"
+  },
+  {
+    "title": "HTML List of People with Age from CSV",
+    "description": "Create an HTML bullet list of people with their age from a CSV.",
+    "prompt": "I have a data set with people that looks like this:\nFirst Name,Last Name,Birth Date,City\nElijah,Lopez,1992-06-20,Houston\nOlivia,Rodriguez,1986-04-11,Philadelphia\nElijah,Davis,1993-07-01,San Jose\nCan you generate Javascript that processes this data and create an HTML bullet list that a concatenation of first name and last name with their age between parentheses, like:\n<ul>\n<li>Elijah Lopez (33)</li>\n<li>Olivia Rodriguez(39)</li>\n</ul>\nOnly generate the JavaScript - nothing else.",
+    "data": "First Name,Last Name,Birth Date,City\nElijah,Lopez,1992-06-20,Houston\nOlivia,Rodriguez,1986-04-11,Philadelphia\nElijah,Davis,1993-07-01,San Jose",
+    "code": "const rows = data.trim().split(\"\\n\").slice(1);\nconst people = rows.map(line => {\n  const [firstName, lastName, birthDate] = line.split(\",\");\n  return { firstName, lastName, birthDate };\n});\nfunction getAge(birthDateStr) {\n  const today = new Date();\n  const birthDate = new Date(birthDateStr);\n  let age = today.getFullYear() - birthDate.getFullYear();\n  const m = today.getMonth() - birthDate.getMonth();\n  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {\n    age--;\n  }\n  return age;\n}\nlet html = \"<ul>\\n\";\npeople.forEach(p => {\n  html += `<li>${p.firstName} ${p.lastName} (${getAge(p.birthDate)})</li>\\n`;\n});\nhtml += \"</ul>\";\nreturn html;",
+    "output": "<ul>\n<li>Elijah Lopez (33)</li>\n<li>Olivia Rodriguez (39)</li>\n<li>Elijah Davis (32)</li>\n</ul>"
+  },
+  {
+    "title": "Random Dutch Names",
+    "description": "Generate a list of 50 random popular Dutch names for boys and girls.",
+    "prompt": "generate JavaScript for creating a list of 50 random popular Dutch names for boys and girls",
+    "data": "",
+    "code": "const dutchFirstNames = [\n  \"Daan\", \"Emma\", \"Noah\", \"Julia\", \"Sem\", \"Mila\", \"Luuk\", \"Tess\", \"Finn\", \"Sophie\",\n  \"Liam\", \"Zoë\", \"Jesse\", \"Sara\", \"Jayden\", \"Lotte\", \"Thijs\", \"Eva\", \"Mees\", \"Anna\",\n  \"Bram\", \"Nina\", \"Milan\", \"Isa\", \"Tijn\", \"Evi\", \"Gijs\", \"Luna\", \"Siem\", \"Fleur\",\n  \"Sam\", \"Yara\", \"Tom\", \"Liv\", \"Boaz\", \"Elin\", \"Ruben\", \"Noor\", \"Cas\", \"Maud\",\n  \"Julian\", \"Saar\", \"Levi\", \"Jasmijn\", \"Benjamin\", \"Amélie\", \"David\", \"Lina\", \"Joep\", \"Roos\"\n];\nfunction getRandomNames(count) {\n  const shuffled = dutchFirstNames.sort(() => 0.5 - Math.random());\n  return shuffled.slice(0, count);\n}\nconst randomDutchNames = getRandomNames(50);\nreturn randomDutchNames;",
+    "output": "[\n  \"Daan\", \"Milan\", \"Emma\", \"Jayden\", \"Joep\", \"Mila\", \"Lina\", \"Bram\", \"Evi\", \"Julia\",\n  \"Siem\", \"David\", \"Ruben\", \"Thijs\", \"Isa\", \"Elin\", \"Noah\", \"Luna\", \"Sem\", \"Jasmijn\",\n  \"Zoë\", \"Nina\", \"Tess\", \"Julian\", \"Levi\", \"Amélie\", \"Sara\", \"Sophie\", \"Saar\", \"Liv\",\n  \"Tijn\", \"Mees\", \"Anna\", \"Maud\", \"Luuk\", \"Jesse\", \"Fleur\", \"Sam\", \"Boaz\", \"Finn\",\n  \"Yara\", \"Liam\", \"Cas\", \"Benjamin\", \"Tom\", \"Lotte\", \"Roos\", \"Noor\", \"Gijs\", \"Eva\"\n]"
+  }
+]
