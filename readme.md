@@ -1,6 +1,26 @@
-# Read Me
+# The JavaScript Code Executor
 
-a static web app that allows the user to upload ( or paste) a data file ( text string, csv or json) and paste and execute a JavaScript code block to process that data. The result is shown, can be copied to clipboard and can be downloaded.a small, browser-only “data scratchpad” where:
+
+
+## What
+A web application that allows the user to upload ( or paste) a data file ( text string, csv or json) as well as paste and execute a JavaScript code block to process that data. The result is shown, can be copied to clipboard and can be downloaded.
+
+## Why
+When working with data sets, you may want to invoke the help of an LLM backed ChatBot to do some of the manipulation, enriching, filtering etc for you. However, there are some reasons why that is not viable:
+* the data is confidential and the Chatbot isa public service
+* the Chatbot is not capabable of understanding or executing your request
+* the Chatbot is too slow or too expensive 
+* you will have to perform the same operation many times and having an LLM chew on it every time is slow and not really responsible use of AI
+
+There a fairly simple solution that deals with all of these challenges: ask the Chatbot not to manipulate your data but to generate a piece of JavaScript to do so. You will have to tell the Chatbot once what your data looks like (not even your real data, just something similar and only a small portion of it) and describe what you want to have done to it and what the result should look like. Using a well structured prompt like the one shown below it is not hard at all to get ChatGPT, Gemini, Copilot or Le CHat to generate a piece of JavaScript. 
+
+However, until now the challenge was for many users: how can I run that piece of code? And how can I have it work against my data? And this is precisely what this simple little app is for. In it, you bring together the code (courtesy of the LLM) and your data (paste it or upload it) - and you then run the code against the data. The output is visible in the browser page, can be copied to the clipboard and can be downloaded.
+
+Once it has been proven to work well, the same code can be executed in the same way many times - against different sets of data - without revisiting the LLM/Chatbot. The user can save the code with a description to the local library for easy future reuse. When it first opens, the app comes with a sample library. The samples show for several use cases the prompt, the LLM generated code based on that prompt, the input data and the output. These samples illustrate how you could work with the prompt and the chatbot to craft code that processes your data in the desired way - without the user having to write or even understand JavaScript.
+
+It is important to understand that this browser application runs entirely locally inside the browser. No data is sent to external party. Nothing needs to be installed. You open the app from the URL on GitHub. The app can be started and downloaded from GitHub Pages into your browser and from that point on runs entirely locally. Also note that currently the app only can run JavaScript. Using WebAssemly and the Python emulator for WASM, it may be fairly straightforward to also allow generated Python code.  
+
+## How
 
 The user can upload a file or paste data (CSV, JSON, text).
 
@@ -11,6 +31,7 @@ They click "Run", and the result is shown.
 The result can be copied or downloaded.
 
 All of this happens client-side (no backend).
+
 
 
 
@@ -549,3 +570,12 @@ in main.js
     runInWorker(code, data);
   });
 </script>
+
+
+## Under the hood
+
+The Application really is very simple. 
+
+The files favorites=modal.html and favorites.js support the code snippets savet by the user (to the local storage in the browser)
+The files samples=modal.css and samples-modal.js support usage of the shipped samples that are defined in file samples.json)
+
