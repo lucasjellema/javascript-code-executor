@@ -256,6 +256,92 @@ Result after running code:
 ]
 ``` 
 
+### Age calculator
+
+Using the standard prompt with the actual instruction at the end to return a list of first names and ages:
+
+```
+You are a code assistant. 
+I will provide you with:
+- The input data (as a string, which may be CSV, JSON, or plain text).
+- The transformation or processing I want done.
+
+Write a single JavaScript function body that:
+- Accepts one argument called `data` (string).
+- Processes it according to my request.
+- Returns the result (object, array, or string).
+
+Important:
+- Do not include explanations or comments.
+- Do not include markdown formatting or triple backticks.
+- The output must be **only valid JavaScript code** for the function body.
+
+Example input:
+Data: JSON array of objects
+Task: return the names in uppercase
+
+Desired Example Output:
+const obj = JSON.parse(data);
+return obj.map(x => x.name.toUpperCase());
+
+
+Now here is my request: here is data (revenue per customer per month)
+Data: 
+Jan de Bruin,23-03-1969
+Christa Jansen,11-10-1989
+Jochem van Zuilen,26-12-2001 
+
+
+Task: Give me a list of people (first name only) with their current age and their next birthday including the name of the weekday:
+
+Jan,56,maandag 23 maart 2026
+Christa,35,woensdag 11 oktober 2025
+Jochem,24,26 december 2025
+```
+
+ChatGPT returned:
+
+``` 
+const lines = data.trim().split('\n');
+const months = ['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+const weekdays = ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'];
+const today = new Date();
+return lines.map(line => {
+const [fullName, dobStr] = line.split(',');
+const [day, month, year] = dobStr.trim().split('-').map(Number);
+const birthDate = new Date(year, month - 1, day);
+const thisYear = today.getFullYear();
+let nextBirthday = new Date(thisYear, month - 1, day);
+if (nextBirthday < today) nextBirthday.setFullYear(thisYear + 1);
+const age = thisYear - year - (today < new Date(thisYear, month - 1, day) ? 1 : 0);
+const weekday = weekdays[nextBirthday.getDay()];
+const formattedDate = `${day} ${months[month - 1]} ${nextBirthday.getFullYear()}`;
+return `${fullName.split(' ')[0]},${age},${weekday} ${formattedDate}`;
+});
+``` 
+
+Running this on "actual" data:
+```
+Jan de Bruin,23-03-1969
+Christa Jansen,11-10-1989
+Jochem van Zuilen,26-12-2001 
+Erik van de Berg,21-06-1975
+Jitse het Hert,30-01-2003
+``` 
+
+returned this result:
+
+```
+[
+  "Jan,56,maandag 23 maart 2026",
+  "Christa,35,zaterdag 11 oktober 2025",
+  "Jochem,23,vrijdag 26 december 2025",
+  "Erik,50,zondag 21 juni 2026",
+  "Jitse,22,vrijdag 30 januari 2026"
+]
+```
+
+
 ### Customer Revenue
 
 Prompt:
@@ -353,7 +439,29 @@ Daan de Boer,1167,704,216,2087
 Lotte Hendriks,455,1140,460,2055
 
 
-## Next Steps
+
+## Under the hood
+
+The Application really is very simple. 
+
+The files favorites=modal.html and favorites.js support the code snippets savet by the user (to the local storage in the browser)
+The files samples=modal.css and samples-modal.js support usage of the shipped samples that are defined in file samples.json
+
+The JavaScript executed my the application is created as a function that is invoked with a parameter called "data"; the function is defined as synchronous. . Whatever the function returns is presented to the end user. A simple example of valid code:  `return data.length` - assuming that parameter data holds an array.
+
+The JavaScript cannot currently import or make use of any 3rd party libraries. Whatever is available in the browser is whatever the code can leverage. 
+
+# Next Steps
+
+Some suggested next pieces of functionality
+
+* Add a DIV for the code to use as target for an SVG object or a Leaflet Map
+* Add (configurable/selectable) support for loading 3rd party libraries such as d3, Leaflet, 
+* Update the suggested prompt with instructions regarding 3rd party libraries and target containers for displayable results
+* Support JavaScript execution in Web Worker (better separation, safer)
+* Integration with LLM directly (have code generated through an API call to an LLM from this web app)
+
+### Integrate directly with LLM to provide code (no copy & paste)
 (see ChatGPT conversation https://chatgpt.com/share/68d296e1-0b94-8005-b772-f3183c10b356)
 
 how your web app could call an LLM (like OpenAI API) and automatically fill the code box with its response, so the user can just hit Run?
@@ -570,12 +678,4 @@ in main.js
     runInWorker(code, data);
   });
 </script>
-
-
-## Under the hood
-
-The Application really is very simple. 
-
-The files favorites=modal.html and favorites.js support the code snippets savet by the user (to the local storage in the browser)
-The files samples=modal.css and samples-modal.js support usage of the shipped samples that are defined in file samples.json)
 
