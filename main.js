@@ -53,3 +53,49 @@ document.getElementById("downloadBtn").addEventListener("click", function() {
   a.click();
   URL.revokeObjectURL(url);
 });
+
+// --- Output modal behavior: show when #output changes ---
+(function() {
+  const outputEl = document.getElementById('output');
+  const modal = document.getElementById('outputModal');
+  const closeBtn = document.getElementById('closeOutputModal');
+  if (!outputEl || !modal ||  !closeBtn) return;
+
+  let showTimeout = null;
+  const debounceMs = 100; // group rapid updates
+
+  function showModalWithContent() {
+    modal.style.display = 'block';
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  function hideModal() {
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  // Close handlers
+  closeBtn.addEventListener('click', hideModal);
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) hideModal();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') hideModal();
+  });
+
+  // Observe text changes and childList changes
+  const obs = new MutationObserver(function(mutations) {
+    if (showTimeout) clearTimeout(showTimeout);
+    showTimeout = setTimeout(function() {
+        showModalWithContent();
+    }, debounceMs);
+  });
+
+  obs.observe(outputEl, { characterData: true, childList: true, subtree: true });
+
+  // Provide a small helper to allow other scripts to programmatically show output
+  window.showOutputInModal = function(text) {
+    outputEl.textContent = text;
+  };
+
+})();

@@ -5,6 +5,12 @@
   <title>Data Scratchpad</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="samples-modal.css">
+  <script type="module">
+
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+window.d3 = d3;
+
+  </script>
 </head>
 <body>
   <h1>Javascript Data Scratchpad</h1>
@@ -17,7 +23,7 @@
       <h2>Personal Library</h2>
       <div id="favoritesList"></div>
   <div id="favoriteDetails"></div>
-  <button id="copyFavoriteBtn" style="display: none;">Copy Favorite to Main Page</button>
+  <button id="copyFavoriteBtn">Copy Favorite to Main Page</button>
     </div>
   </div>
   <button id="saveFavoriteBtn">Save to Personal Library</button>
@@ -35,7 +41,7 @@
       <button id="saveFavoriteConfirmBtn">Save</button>
     </div>
   </div>
-  <button id="copyPromptBtn">Copy LLM Prompt Template to Clipboard (for use in ChatGPT, Le Chat, Copilot, etc.)</button>
+  <button id="copyPromptBtn">Copy LLM Prompt Template to Clipboard (for use in Gemini, ChatGPT, Le Chat, Copilot, etc.)</button>
   <button id="openSamplesBtn">Open Sample Catalog</button>
     <button id="resetBtn">Reset All Fields</button>
 
@@ -46,7 +52,7 @@
       <h2>Sample Catalog</h2>
       <div id="samplesList"></div>
       <div id="sampleDetails"></div>
-      <button id="copySampleBtn" style="display: none;">Copy Sample to Main Page</button>
+  <button id="copySampleBtn">Copy Sample to Main Page</button>
     </div>
   </div>
   <h2>Upload or Paste Data (text, CSV, JSON, XML)</h2>
@@ -73,6 +79,17 @@
 
   <h2>Result of running JavaScript on the data</h2>
   <pre id="result"></pre>
+
+  <!-- Modal for showing #output when it changes -->
+  <div id="outputModal" class="modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="outputModalTitle">
+      <button id="closeOutputModal" class="modal-close">Close</button>
+      <h2 id="outputModalTitle">Output</h2>
+      <pre id="outputModalContent" style="display: none;"></pre>
+      <!-- Hidden output element that other scripts can write to -->
+      <div id="output"></div>
+    </div>
+  </div>
 
   <script src="main.js"></script>
   <script src="prompt-template.js"></script>
