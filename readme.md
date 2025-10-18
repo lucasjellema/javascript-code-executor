@@ -46,12 +46,14 @@ I will provide you with:
 Write a single JavaScript function body that:
 - Accepts one argument called `data` (string).
 - Processes it according to my request.
+- When the result is SVG, please create the SVG in the DOM inside the DIV element with id=output
 - Returns the result (object, array, or string).
 
 Important:
 - Do not include explanations or comments.
 - Do not include markdown formatting or triple backticks.
 - The output must be **only valid JavaScript code** for the function body.
+- Library d3 is already imported and can be used in your code
 
 Example input:
 Data: JSON array of objects
@@ -68,8 +70,19 @@ Task: [INSERT TRANSFORMATION REQUEST]
 ```
 
 
+## SVG output (using d3)
 
+The library d3 is loaded when this web app is initialized. That means that any code genrated by an LLM to be executed in the app can invoke d3. This is typically done to produce visualizations such as charts.  
 
+The DIV with id=outputModal is initially hidden. It contains a DIV  with id=output. 
+Any script can cause the modal to appear by writing to this #output element. For example: the prompt can instruct the LLM to generate output using the d3 library that uses #output as its target container. If the code that is executed does indeed DOM manipulates the content of this element, the modal will be shown with any SVG visualization that was created in it.
+
+in main.js an MutationObserver is created: an event listener that executes when the DOM content of the output element changes.  
+
+Close the modal by:
+* Clicking the Close button (top-right),
+* Clicking the dimmed background (outside the modal content),
+* Pressing Escape.
 
 ## Examples
 
